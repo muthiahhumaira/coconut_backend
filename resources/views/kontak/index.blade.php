@@ -35,6 +35,18 @@
                                     Detail
                                 </button>
 
+                                <button class="approve-button text-green-600 hover:underline"
+                                    data-name="{{ $contact->company_name }}"
+                                    data-phone="{{ $contact->phone }}">
+                                    Approve
+                                </button>
+
+                                <button class="reject-button text-yellow-600 hover:underline"
+                                    data-name="{{ $contact->company_name }}"
+                                    data-phone="{{ $contact->phone }}">
+                                    Tolak
+                                </button>
+
                                 <button class="delete-button text-red-600 hover:underline"
                                     data-id="{{ $contact->id }}"
                                     data-name="{{ $contact->company_name }}"
@@ -165,6 +177,34 @@
                 .catch(err => {
                     console.error(err);
                     showAlert('error', 'Terjadi kesalahan saat menghapus data');
+                });
+            });
+
+            // Approve & Reject (WhatsApp)
+            function sendWhatsApp(phone, message) {
+                if (!phone) {
+                    showAlert('error', 'Nomor WhatsApp tidak tersedia');
+                    return;
+                }
+                const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+                window.open(url, '_blank');
+            }
+
+            document.querySelectorAll('.approve-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const name = button.dataset.name;
+                    const phone = button.dataset.phone;
+                    const pesan = `Halo ${name}, kami dari tim Coconut telah *menyetujui kerja sama* Anda. Silakan tunggu informasi lanjutan dari kami. Terima kasih. 🙏`;
+                    sendWhatsApp(phone, pesan);
+                });
+            });
+
+            document.querySelectorAll('.reject-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const name = button.dataset.name;
+                    const phone = button.dataset.phone;
+                    const pesan = `Halo ${name}, dengan hormat kami dari tim coconut *belum dapat melanjutkan kerja sama* Anda saat ini. Terima kasih telah menghubungi kami.`;
+                    sendWhatsApp(phone, pesan);
                 });
             });
 

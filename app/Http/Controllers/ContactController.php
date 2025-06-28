@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use App\Mail\ContactApprovalMail;
 
 class ContactController extends Controller
 {
     public function index()
     {
         $contacts = Contact::latest()->get();
-
         return view('kontak.index', compact('contacts'));
     }
 
@@ -20,7 +22,6 @@ class ContactController extends Controller
         return view('kontak.index', compact('contacts'));
     }
 
-    // POST /api/contacts
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -29,7 +30,7 @@ class ContactController extends Controller
             'email' => 'nullable|email',
             'phone' => 'nullable|string|max:255',
             'message' => 'nullable|string',
-            'document' => 'nullable|file|max:2048', // Pastikan ada validasi untuk file!
+            'document' => 'nullable|file|max:2048',
         ]);
 
         if ($request->hasFile('document')) {
@@ -56,5 +57,19 @@ class ContactController extends Controller
         }
 
         return redirect()->route('kontak.index')->with('success', 'Kontak berhasil dihapus');
+    }
+
+    public function approve(Contact $contact)
+    {
+        if (!$contact->email) {
+            return redirect()->back()->with('error', 'Email tidak tersedia untuk kontak ini.');
+        }
+
+        try {
+            Mail::to($contact->email)->send(new ContactApprovalMail($contact));
+            return redirect()->back()->with('success', 'Pesan persetujuan berhasil dikirim ke ' . $contact->email);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengirim email: ' . $e->getMessage());
+        }
     }
 }

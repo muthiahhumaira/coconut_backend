@@ -12,14 +12,21 @@
         <div class="relative">
             <button class="flex items-center text-gray-600 hover:text-gray-800 focus:outline-none" id="userMenuButton">
                 <img src="https://ui-avatars.com/api/?name=User+Name&background=0D8ABC&color=fff&size=30" class="rounded-full mr-2" alt="User Avatar">
-                <span class="hidden md:block">Nama Pengguna</span>
+                <span class="hidden md:block">{{ Auth::user()->name ?? 'Nama Pengguna' }}</span>
                 <i class="fas fa-chevron-down text-xs ml-2"></i>
             </button>
             <div id="userMenuDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 hidden">
                 <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profil</a>
                 <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Pengaturan</a>
                 <div class="border-t border-gray-100 my-1"></div>
-                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Keluar</a>
+
+                <!-- Logout -->
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+                        Keluar
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -35,7 +42,6 @@
                 userMenuDropdown.classList.toggle('hidden');
             });
 
-            // Close dropdown if clicked outside
             document.addEventListener('click', function(event) {
                 if (!userMenuButton.contains(event.target) && !userMenuDropdown.contains(event.target)) {
                     userMenuDropdown.classList.add('hidden');
