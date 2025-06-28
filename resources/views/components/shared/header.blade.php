@@ -7,7 +7,7 @@
 
     <div class="flex items-center space-x-4">
         <a href="#" class="text-gray-600 hover:text-gray-800 hidden md:block">
-            <i class="fas fa-bell text-lg"></i>
+            <!-- <i class="fas fa-bell text-lg"></i> -->
         </a>
         <div class="relative">
             <button class="flex items-center text-gray-600 hover:text-gray-800 focus:outline-none" id="userMenuButton">
@@ -16,8 +16,6 @@
                 <i class="fas fa-chevron-down text-xs ml-2"></i>
             </button>
             <div id="userMenuDropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 hidden">
-                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profil</a>
-                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Pengaturan</a>
                 <div class="border-t border-gray-100 my-1"></div>
 
                 <!-- Logout -->
