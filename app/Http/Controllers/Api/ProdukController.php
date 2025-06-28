@@ -158,88 +158,97 @@ class ProdukController extends Controller
     /**
      * Update the specified product in storage.
      */
-    public function update(Request $request, Product $product)
-    {
-        try {
-            $validatedData = $request->validate([
-                'nama' => 'required|string|max:255|unique:products,nama,' . $product->id,
-                'deskripsi' => 'nullable|string',
-                'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'spesifikasi' => 'nullable|array',
-                'detail_spesifikasi' => 'nullable|string',
-                'spesifikasi.Detail' => 'nullable|string',
-                'spesifikasi.Color' => 'nullable|string',
-                'spesifikasi.Odour' => 'nullable|string',
-                'spesifikasi.Solubility in Water' => 'nullable|string',
-                'spesifikasi.Moisture' => 'nullable|string',
-                'spesifikasi.Iodine Value' => 'nullable|string',
-                'spesifikasi.Saponification Value' => 'nullable|string',
-                'spesifikasi.Free Fatty Acid' => 'nullable|string',
-                'spesifikasi.Unsaponifiable Materia' => 'nullable|string',
-            ]);
+   public function update(Request $request, Product $product)
+{
+    try {
+        $validatedData = $request->validate([
+            'nama' => 'required|string|max:255|unique:products,nama,' . $product->id,
+            'deskripsi' => 'nullable|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'spesifikasi' => 'nullable|array',
+            'detail_spesifikasi' => 'nullable|string',
+            'spesifikasi.Ingredients' => 'nullable|string',
+            'spesifikasi.Moisture Content' => 'nullable|string',
+            'spesifikasi.Oil/Fat Content' => 'nullable|string',
+            'spesifikasi.Appearance' => 'nullable|string',
+            'spesifikasi.Packaging' => 'nullable|string',
+            'spesifikasi.Shelf Life' => 'nullable|string',
+            'spesifikasi.Certifications' => 'nullable|string',
+            'spesifikasi.Origin' => 'nullable|string',
+            'spesifikasi.Use' => 'nullable|string',
+        ]);
 
-            $gambarPath = $product->gambar;
-            if ($request->hasFile('gambar')) {
-                if ($product->gambar && Storage::exists(str_replace('storage/', 'public/', $product->gambar))) {
-                    Storage::delete(str_replace('storage/', 'public/', $product->gambar));
-                }
-                $gambarPath = $request->file('gambar')->store('public/products');
-                $gambarPath = str_replace('public/', 'storage/', $gambarPath);
-            } elseif ($request->boolean('clear_gambar')) { // Menggunakan boolean() untuk input checkbox
-                if ($product->gambar && Storage::exists(str_replace('storage/', 'public/', $product->gambar))) {
-                    Storage::delete(str_replace('storage/', 'public/', $product->gambar));
-                }
-                $gambarPath = null;
+        $gambarPath = $product->gambar;
+        if ($request->hasFile('gambar')) {
+            if ($product->gambar && Storage::exists(str_replace('storage/', 'public/', $product->gambar))) {
+                Storage::delete(str_replace('storage/', 'public/', $product->gambar));
             }
-
-            $spesifikasi = [];
-            if ($request->has('spesifikasi')) {
-                foreach ($request->spesifikasi as $key => $value) {
-                    if (in_array($key, ['Detail', 'Color', 'Odour', 'Solubility in Water', 'Moisture', 'Iodine Value', 'Saponification Value', 'Free Fatty Acid', 'Unsaponifiable Materia'])) {
-                        $spesifikasi[$key] = $value;
-                    }
-                }
-            } else {
-                $spesifikasi = [];
+            $gambarPath = $request->file('gambar')->store('public/products');
+            $gambarPath = str_replace('public/', 'storage/', $gambarPath);
+        } elseif ($request->boolean('clear_gambar')) {
+            if ($product->gambar && Storage::exists(str_replace('storage/', 'public/', $product->gambar))) {
+                Storage::delete(str_replace('storage/', 'public/', $product->gambar));
             }
-
-            $product->update([
-                'nama' => $validatedData['nama'],
-                'deskripsi' => $validatedData['deskripsi'],
-                'gambar' => $gambarPath,
-                'detail_spesifikasi' => $validatedData['detail_spesifikasi'],
-                'spesifikasi' => $spesifikasi,
-            ]);
-
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Produk berhasil diperbarui!',
-                    // Opsional: Kirim data produk yang diperbarui jika Anda ingin update DOM tanpa reload
-                    // 'product' => new ProductResource(true, '', $product) // Contoh jika pakai resource
-                ]);
-            }
-
-            return redirect()->route('products.list')->with('success', 'Produk berhasil diperbarui!');
-        } catch (ValidationException $e) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validasi gagal',
-                    'errors' => $e->errors()
-                ], 422);
-            }
-            return redirect()->back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Terjadi kesalahan server: ' . $e->getMessage()
-                ], 500);
-            }
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui produk: ' . $e->getMessage())->withInput();
+            $gambarPath = null;
         }
+
+        $specs = [
+            'Ingredients',
+            'Moisture Content',
+            'Oil/Fat Content',
+            'Appearance',
+            'Packaging',
+            'Shelf Life',
+            'Certifications',
+            'Origin',
+            'Use'
+        ];
+
+        $spesifikasi = [];
+        if ($request->has('spesifikasi')) {
+            foreach ($request->spesifikasi as $key => $value) {
+                if (in_array($key, $specs)) {
+                    $spesifikasi[$key] = $value;
+                }
+            }
+        }
+
+        $product->update([
+            'nama' => $validatedData['nama'],
+            'deskripsi' => $validatedData['deskripsi'],
+            'gambar' => $gambarPath,
+            'detail_spesifikasi' => $validatedData['detail_spesifikasi'],
+            'spesifikasi' => $spesifikasi,
+        ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Produk berhasil diperbarui!',
+            ]);
+        }
+
+        return redirect()->route('products.list')->with('success', 'Produk berhasil diperbarui!');
+    } catch (ValidationException $e) {
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+        }
+        return redirect()->back()->withErrors($e->errors())->withInput();
+    } catch (\Exception $e) {
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan server: ' . $e->getMessage()
+            ], 500);
+        }
+        return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui produk: ' . $e->getMessage())->withInput();
     }
+}
+
 
     /**
      * Remove the specified product from storage.

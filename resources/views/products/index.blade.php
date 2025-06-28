@@ -88,7 +88,15 @@
                 return specName.toLowerCase().replace(/ /g, '_').replace(/[^a-z0-9_]/g, '');
             }
 
-            const specFields = ['Color', 'Odour', 'Solubility in Water', 'Moisture', 'Iodine Value', 'Saponification Value', 'Free Fatty Acid', 'Unsaponifiable Materia'];
+            const specFields = ['Ingredients',
+        'Moisture Content',
+        'Oil/Fat Content',
+        'Appearance',
+        'Packaging',
+        'Shelf Life',
+        'Certifications',
+        'Origin',
+        'Use'];
             const editSpecInputs = {};
             specFields.forEach(spec => {
                 const elementId = `edit_spesifikasi_${slugifySpecName(spec)}`;
@@ -414,7 +422,17 @@ console.log('Detail Spesifikasi camelCase:', this.dataset.detailSpesifikasi);
                     <h3 class="text-xl font-semibold text-gray-800 mb-4">Spesifikasi Produk</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @php
-                            $specs = ['Color', 'Odour', 'Solubility in Water', 'Moisture', 'Iodine Value', 'Saponification Value', 'Free Fatty Acid', 'Unsaponifiable Materia'];
+                         $specs = [
+        'Ingredients',
+        'Moisture Content',
+        'Oil/Fat Content',
+        'Appearance',
+        'Packaging',
+        'Shelf Life',
+        'Certifications',
+        'Origin',
+        'Use'
+    ];
                         @endphp
                         @foreach ($specs as $spec)
                             <div class="mb-2">
