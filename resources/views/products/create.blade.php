@@ -22,8 +22,7 @@
                 <label for="nama" class="block text-gray-700 text-sm font-bold mb-2">Nama Produk:</label>
                 <input type="text"
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent @error('nama') border-red-500 @enderror"
-                    id="nama" name="nama" value="{{ old('nama') }}" placeholder="Masukkan nama produk"
-                    required>
+                    id="nama" name="nama" value="{{ old('nama') }}" placeholder="Masukkan nama produk" required>
                 @error('nama')
                     <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
                 @enderror
@@ -51,6 +50,7 @@
                 @enderror
             </div>
 
+            {{-- Detail Spesifikasi --}}
             <div class="mb-4">
                 <label for="detail_spesifikasi" class="block text-gray-700 text-sm font-bold mb-2">Detail Spesifikasi:</label>
                 <textarea
@@ -60,20 +60,22 @@
                     <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
                 @enderror
             </div>
-            {{-- Spesifikasi --}}
+
+            {{-- Spesifikasi Produk --}}
             <div class="mb-6">
                 <h3 class="text-xl font-semibold text-gray-800 mb-4">Spesifikasi Produk</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     @php
                         $specs = [
-                            'Color',
-                            'Odour',
-                            'Solubility in Water',
-                            'Moisture',
-                            'Iodine Value',
-                            'Saponification Value',
-                            'Free Fatty Acid',
-                            'Unsaponifiable Materia',
+                            'Ingredients',
+                            'Moisture Content',
+                            'Oil/Fat Content',
+                            'Appearance',
+                            'Packaging',
+                            'Shelf Life',
+                            'Certifications',
+                            'Origin',
+                            'Use'
                         ];
                     @endphp
                     @foreach ($specs as $spec)
@@ -92,6 +94,7 @@
                 </div>
             </div>
 
+            {{-- Tombol Aksi --}}
             <div class="flex items-center justify-end">
                 <button type="submit"
                     class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline mr-2">

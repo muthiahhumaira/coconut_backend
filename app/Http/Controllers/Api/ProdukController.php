@@ -73,15 +73,15 @@ class ProdukController extends Controller
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'spesifikasi' => 'nullable|array',
                 'detail_spesifikasi' => 'nullable|string',
-                'spesifikasi.Detail' => 'nullable|string',
-                'spesifikasi.Color' => 'nullable|string',
-                'spesifikasi.Odour' => 'nullable|string',
-                'spesifikasi.Solubility in Water' => 'nullable|string',
-                'spesifikasi.Moisture' => 'nullable|string',
-                'spesifikasi.Iodine Value' => 'nullable|string',
-                'spesifikasi.Saponification Value' => 'nullable|string',
-                'spesifikasi.Free Fatty Acid' => 'nullable|string',
-                'spesifikasi.Unsaponifiable Materia' => 'nullable|string',
+                'spesifikasi.Ingredients' => 'nullable|string',
+                'spesifikasi.Moisture Content' => 'nullable|string',
+                'spesifikasi.Oil/Fat Content' => 'nullable|string',
+                'spesifikasi.Appearance' => 'nullable|string',
+                'spesifikasi.Packaging' => 'nullable|string',
+                'spesifikasi.Shelf Life' => 'nullable|string',
+                'spesifikasi.Certifications' => 'nullable|string',
+                'spesifikasi.Origin' => 'nullable|string',
+                'spesifikasi.Use' => 'nullable|string',
             ]);
 
             $gambarPath = null;
@@ -90,10 +90,22 @@ class ProdukController extends Controller
                 $gambarPath = str_replace('public/', 'storage/', $gambarPath);
             }
 
+            $specs = [
+                'Ingredients',
+                'Moisture Content',
+                'Oil/Fat Content',
+                'Appearance',
+                'Packaging',
+                'Shelf Life',
+                'Certifications',
+                'Origin',
+                'Use'
+            ];
+
             $spesifikasi = [];
             if ($request->has('spesifikasi')) {
                 foreach ($request->spesifikasi as $key => $value) {
-                    if (in_array($key, ['Detail', 'Color', 'Odour', 'Solubility in Water', 'Moisture', 'Iodine Value', 'Saponification Value', 'Free Fatty Acid', 'Unsaponifiable Materia'])) {
+                    if (in_array($key, $specs)) {
                         $spesifikasi[$key] = $value;
                     }
                 }
@@ -107,12 +119,11 @@ class ProdukController extends Controller
                 'detail_spesifikasi' => $validatedData['detail_spesifikasi']
             ]);
 
-            // Jika ini adalah permintaan AJAX, kembalikan JSON
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Produk berhasil ditambahkan!'
-                ], 201); // 201 Created
+                ], 201);
             }
 
             return redirect()->route('products.list')->with('success', 'Produk berhasil ditambahkan!');
@@ -122,7 +133,7 @@ class ProdukController extends Controller
                     'success' => false,
                     'message' => 'Validasi gagal',
                     'errors' => $e->errors()
-                ], 422); // 422 Unprocessable Entity
+                ], 422);
             }
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
@@ -130,7 +141,7 @@ class ProdukController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Terjadi kesalahan server: ' . $e->getMessage()
-                ], 500); // 500 Internal Server Error
+                ], 500);
             }
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan produk: ' . $e->getMessage())->withInput();
         }
