@@ -44,14 +44,14 @@
                                 <button class="reject-button text-yellow-600 hover:underline"
                                     data-name="{{ $contact->company_name }}"
                                     data-phone="{{ $contact->phone }}">
-                                    Tolak
+                                    Reject
                                 </button>
 
                                 <button class="delete-button text-red-600 hover:underline"
                                     data-id="{{ $contact->id }}"
                                     data-name="{{ $contact->company_name }}"
                                     data-destroy-url="{{ route('kontak.destroy', $contact->id) }}">
-                                    Hapus
+                                    Delete
                                 </button>
                             </td>
                         </tr>
@@ -194,7 +194,7 @@
                 button.addEventListener('click', () => {
                     const name = button.dataset.name;
                     const phone = button.dataset.phone;
-                    const pesan = `Halo ${name}, kami dari tim Coconut telah *menyetujui kerja sama* Anda. Silakan tunggu informasi lanjutan dari kami. Terima kasih. 🙏`;
+                    const pesan = `Halo ${name}, kami dari tim Batam Dwi Coconut telah *menyetujui kerja sama* Anda. Silakan tunggu informasi lanjutan dari kami. Terima kasih. 🙏`;
                     sendWhatsApp(phone, pesan);
                 });
             });
@@ -203,7 +203,7 @@
                 button.addEventListener('click', () => {
                     const name = button.dataset.name;
                     const phone = button.dataset.phone;
-                    const pesan = `Halo ${name}, dengan hormat kami dari tim coconut *belum dapat melanjutkan kerja sama* Anda saat ini. Terima kasih telah menghubungi kami.`;
+                    const pesan = `Halo ${name}, dengan hormat kami dari tim Batam Dwi Coconut *belum dapat melanjutkan kerja sama* Anda saat ini. Terima kasih telah menghubungi kami.`;
                     sendWhatsApp(phone, pesan);
                 });
             });
